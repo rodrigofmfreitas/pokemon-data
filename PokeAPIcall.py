@@ -5,7 +5,8 @@ import os
 def pokecall():
     categories = ["HP", "Atk", "Def", "SpAtk", "SPDef", "Spd"]
     pokedict = {"id": [], "Name": [], "HP": [], "Atk": [], "Def": [], "SpAtk": [],
-            "SPDef": [], "Spd": [], "Weight": [], "Height": [], "Rarity": []}
+            "SPDef": [], "Spd": [], "Weight": [], "Height": [], "Rarity": [],
+            "Type1": [], "Type2": []}
 
     for i in range(1008):
         url = f"https://pokeapi.co/api/v2/pokemon/{i+1}"
@@ -17,7 +18,11 @@ def pokecall():
         pokedict["Name"].append(pokelist["name"])
         pokedict["Weight"].append(pokelist["weight"])
         pokedict["Height"].append(pokelist["height"])
-
+        pokedict["Type1"].append(pokelist["types"][0]["type"]["name"])
+        if len(pokelist["types"]) > 1:
+            pokedict["Type2"].append(pokelist["types"][1]["type"]["name"])
+        else:
+            pokedict["Type2"].append(pokelist["types"][0]["type"]["name"])
         for j in range(6):
             pokedict[categories[j]].append(pokelist["stats"][j]["base_stat"])
 
@@ -34,6 +39,7 @@ def pokecall():
             rarity = "Common"
 
         pokedict["Rarity"].append(rarity)
+
     path = os.getcwd()
     pokedex = pd.DataFrame.from_dict(pokedict).set_index("id")
     pokedex.to_csv(f"{path}\Dataframe\pokedex.csv")
